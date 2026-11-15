@@ -15,13 +15,14 @@ class ADBFullTVScreen(ImageEntity):
     """Live screenshot captured from the TV through ADB."""
 
     _attr_content_type = "image/png"
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
+    _attr_translation_key = "screen"
 
     def __init__(self, entry, client):
         super().__init__(client.hass)
         self.entry = entry
         self.client = client
-        self._attr_name = "Ekran"
+        self._attr_name = None
         self._attr_unique_id = f"{entry.entry_id}_screen"
 
     @property
