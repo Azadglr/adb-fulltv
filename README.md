@@ -1,5 +1,8 @@
 # ADB FullTV
 
+[![HACS validation](https://github.com/Azadglr/adb-fulltv/actions/workflows/validate.yml/badge.svg)](https://github.com/Azadglr/adb-fulltv/actions/workflows/validate.yml)
+[![Hassfest](https://github.com/Azadglr/adb-fulltv/actions/workflows/hassfest.yml/badge.svg)](https://github.com/Azadglr/adb-fulltv/actions/workflows/hassfest.yml)
+
 <p align="center">
   <img src="icon.svg" alt="ADB FullTV icon" width="180">
 </p>
