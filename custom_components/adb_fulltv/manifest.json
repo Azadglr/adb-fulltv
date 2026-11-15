@@ -1,7 +1,7 @@
 {
   "domain": "adb_fulltv",
   "name": "ADB FullTV",
-  "version": "2.4.3",
+  "version": "2.5.0",
   "documentation": "https://github.com/AzadGLR/adb-fulltv",
   "issue_tracker": "https://github.com/AzadGLR/adb-fulltv/issues",
   "codeowners": [
