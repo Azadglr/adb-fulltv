@@ -106,7 +106,11 @@ class ADBFullTVFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 step_id="user",
                 data_schema=vol.Schema({
                     vol.Required("method", default="scan"): selector.SelectSelector(
-                        selector.SelectSelectorConfig(options=[{"value": "scan", "label": "Otomatik Bul (Ağı Tara)"}, {"value": "manual", "label": "IP Adresi Manuel Gir"}], mode=selector.SelectSelectorMode.DROPDOWN)
+                        selector.SelectSelectorConfig(
+                            options=["scan", "manual"],
+                            translation_key="setup_method",
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                        )
                     )
                 }),
             )
@@ -197,7 +201,13 @@ class ADBFullTVFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     errors["base"] = "pair_failed"
         return self.async_show_form(step_id="pair", errors=errors, data_schema=vol.Schema({
             vol.Optional("code"): str,
-            vol.Required("pair_action", default="submit"): selector.SelectSelector(selector.SelectSelectorConfig(options=[{"value": "submit", "label": "Kodu Gönder"}, {"value": "resend", "label": "Kodu Bir Kez Daha Gönder"}, {"value": "skip", "label": "Eşleştirmeyi Atla"}], mode=selector.SelectSelectorMode.DROPDOWN)),
+            vol.Required("pair_action", default="submit"): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=["submit", "resend", "skip"],
+                    translation_key="pair_action",
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
         }))
 
 
@@ -210,11 +220,19 @@ class ADBFullTVOptionsFlow(config_entries.OptionsFlowWithReload):
         certfile = self.config_entry.data.get("certfile")
         keyfile = self.config_entry.data.get("keyfile")
         paired = bool(certfile and keyfile and Path(certfile).exists() and Path(keyfile).exists())
-        adb_status = "Kapalı"
+        is_turkish = (self.hass.config.language or "").lower().startswith("tr")
+        adb_status = "Kapalı" if is_turkish else "Disabled"
         if use_adb_volume and host:
             adb = ADBLite(Path(self.hass.config.path(".storage")) / DOMAIN / "adb", host)
             ok = await adb.probe(stream=3)
-            adb_status = "Aktif" if ok else f"Bağlanamadı ({adb.last_error or 'izin/bağlantı yok'})"
+            if ok:
+                adb_status = "Aktif" if is_turkish else "Active"
+            else:
+                detail = adb.last_error or ("izin/bağlantı yok" if is_turkish else "permission or connection unavailable")
+                adb_status = f"Bağlanamadı ({detail})" if is_turkish else f"Unavailable ({detail})"
             await adb.disconnect()
-        status = f"IP Adresi: {host}\nEşleştirme: {'Var' if paired else 'Yok'}\nADB Servisi: {adb_status}"
+        if is_turkish:
+            status = f"IP Adresi: {host}\nEşleştirme: {'Var' if paired else 'Yok'}\nADB Servisi: {adb_status}"
+        else:
+            status = f"IP address: {host}\nPairing: {'Available' if paired else 'Unavailable'}\nADB service: {adb_status}"
         return self.async_show_form(step_id="init", description_placeholders={"status": status}, data_schema=vol.Schema({vol.Optional("use_adb_volume", default=use_adb_volume): bool}))
