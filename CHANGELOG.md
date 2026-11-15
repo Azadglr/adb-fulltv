@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.5.0
+## v0.1.0
 
 - Added native Home Assistant brand images for Home Assistant 2026.3+.
 - Added complete English and Turkish translations for selectors, services and entity names.
@@ -8,7 +8,7 @@
 - Added the Home Assistant Hassfest validation workflow required for HACS Marketplace review.
 - Removed a device-specific Cast dependency; media metadata now comes from the configured TV only.
 
-## 2.4.3
+## Pre-release development
 
 - First public release.
 - Unified Android TV Remote v2, ADB media metadata, screenshots and on-screen notifications.
