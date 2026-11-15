@@ -1,0 +1,66 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADB FullTV Kurulumu",
+        "description": "TV'nizi ağda otomatik bulabilir veya IP adresini manuel girebilirsiniz.",
+        "data": {
+          "method": "Kurulum Yöntemi"
+        }
+      },
+      "scan": {
+        "title": "Cihaz Seçimi",
+        "description": "Bulunan cihazlardan birini seçin. Varsayılan olarak eşleştirme yapılır. İsterseniz daha sonra eşleştirebilirsiniz.",
+        "data": {
+          "host": "IP Adresi",
+          "name": "İsim",
+          "pair_now": "Şimdi Eşleştir",
+          "use_adb_volume": "ADB Servisini Kullan (Anında Ses)"
+        }
+      },
+      "manual": {
+        "title": "Manuel Kurulum",
+        "description": "TV'nin IP adresini girin.",
+        "data": {
+          "host": "IP Adresi",
+          "name": "İsim",
+          "pair_now": "Şimdi Eşleştir",
+          "use_adb_volume": "ADB Servisini Kullan (Anında Ses)"
+        }
+      },
+      "pair": {
+        "title": "Eşleştirme",
+        "description": "TV ekranında görünen kodu girin. Kod gelmediyse işlem alanından kodu tekrar gönderebilir veya eşleştirmeyi atlayabilirsiniz.",
+        "data": {
+          "code": "Kod",
+          "pair_action": "İşlem"
+        }
+      }
+    },
+    "error": {
+      "no_devices_found": "Cihaz bulunamadı.",
+      "pair_failed": "Eşleştirme başarısız oldu. Kodu tekrar deneyin veya eşleştirmeyi atlayın.",
+      "code_required": "Kod alanı boş bırakılamaz.",
+      "pair_start_failed": "Eşleştirme isteği yeniden gönderilemedi. TV'nin açık ve aynı ağda olduğundan emin olun."
+    },
+    "abort": {
+      "local_ip_failed": "Ağ IP bilgisi alınamadı."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Seçenekler",
+        "description": "Durum:\n{status}\n\nAnında ses için ADB servisini açıp kapatabilirsiniz. ADB çalışmazsa entegrasyon normal ses kontrolüne düşer.",
+        "data": {
+          "use_adb_volume": "ADB Servisini Kullan (Anında Ses)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "remote": {"remote": {"name": "Kontrol"}},
+    "image": {"screen": {"name": "Ekran"}},
+    "notify": {"notification": {"name": "Bildirim"}}
+  }
+}
