@@ -58,6 +58,8 @@ Copy `custom_components/adb_fulltv` into your Home Assistant `config/custom_comp
 | `image.adb_fulltv_screen` | Current TV screen as a PNG image |
 | `notify.adb_fulltv_notification` | On-screen message service |
 
+Secondary entity display names follow Home Assistant's language: **Remote / Screen / On-screen notification** in English and **Kontrol / Ekran / Bildirim** in Turkish. Existing custom names chosen by the user are preserved by Home Assistant.
+
 ## Security
 
 Keep ADB available only on your trusted local network. Never expose TCP port `5555` directly to the internet.

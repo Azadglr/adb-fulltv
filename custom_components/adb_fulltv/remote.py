@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from homeassistant.components.remote import RemoteEntity
 from .const import DOMAIN
+from .entity_names import entity_name
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -11,13 +12,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 class ADBFullTVRemote(RemoteEntity):
     _attr_should_poll = False
-    _attr_has_entity_name = True
-    _attr_translation_key = "remote"
+    _attr_has_entity_name = False
 
     def __init__(self, entry, client):
         self.entry = entry
         self.client = client
-        self._attr_name = None
+        self._attr_name = entity_name(client.hass.config.language, "remote")
         self._attr_unique_id = f"{entry.entry_id}_remote"
         self._unsub = None
         self._is_on = None

@@ -6,6 +6,7 @@ from homeassistant.components.notify import NotifyEntity, NotifyEntityFeature
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import DOMAIN
+from .entity_names import entity_name
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -17,13 +18,12 @@ class ADBFullTVNotify(NotifyEntity):
     """Send on-screen notifications through the Android TV notification app."""
 
     _attr_supported_features = NotifyEntityFeature.TITLE
-    _attr_has_entity_name = True
-    _attr_translation_key = "notification"
+    _attr_has_entity_name = False
 
     def __init__(self, entry, client):
         self.entry = entry
         self.client = client
-        self._attr_name = None
+        self._attr_name = entity_name(client.hass.config.language, "notification")
         self._attr_unique_id = f"{entry.entry_id}_notify"
         self._notifier = None
 
