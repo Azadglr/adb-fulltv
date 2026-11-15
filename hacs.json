@@ -1,0 +1,9 @@
+{
+  "name": "ADB FullTV",
+  "hacs": "2.0.0",
+  "domains": [
+    "adb_fulltv"
+  ],
+  "homeassistant": "2026.11.0",
+  "render_readme": true
+}
