@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.0
+
+- Added native Home Assistant brand images for Home Assistant 2026.3+.
+- Added complete English and Turkish translations for selectors, services and entity names.
+- Localized app source labels according to the configured Home Assistant language.
+- Added the Home Assistant Hassfest validation workflow required for HACS Marketplace review.
+
 ## 2.4.3
 
 - First public release.
