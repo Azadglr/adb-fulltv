@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">ADB FullTV</title>
+  <desc id="desc">A modern television and remote-control icon for Home Assistant.</desc>
+  <defs>
+    <linearGradient id="bg" x1="56" y1="42" x2="458" y2="478" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17283D"/>
+      <stop offset="1" stop-color="#08121F"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="150" y1="137" x2="359" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#37E9E2"/>
+      <stop offset="1" stop-color="#1687E8"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="28" y="28" width="456" height="456" rx="116" fill="url(#bg)"/>
+  <rect x="85" y="95" width="292" height="218" rx="33" fill="#0B1726" stroke="#62F6EE" stroke-width="13"/>
+  <rect x="110" y="119" width="242" height="170" rx="21" fill="url(#screen)" opacity=".93"/>
+  <path d="M178 161l-39 43 39 43M284 161l39 43-39 43" fill="none" stroke="#F3FFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M240 151l-18 106" stroke="#F3FFFF" stroke-width="16" stroke-linecap="round"/>
+  <path d="M196 365h70M232 314v51" stroke="#62F6EE" stroke-width="14" stroke-linecap="round"/>
+  <rect x="328" y="276" width="91" height="151" rx="28" fill="#152A41" stroke="#EAFDFF" stroke-width="9"/>
+  <circle cx="374" cy="312" r="13" fill="#62F6EE" filter="url(#glow)"/>
+  <circle cx="352" cy="351" r="8" fill="#EAFDFF"/>
+  <circle cx="396" cy="351" r="8" fill="#EAFDFF"/>
+  <circle cx="352" cy="385" r="8" fill="#EAFDFF"/>
+  <circle cx="396" cy="385" r="8" fill="#EAFDFF"/>
+</svg>
