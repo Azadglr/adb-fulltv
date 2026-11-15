@@ -12,18 +12,25 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-APP_NAMES = {
+APP_NAMES_EN = {
     "com.google.android.youtube.tv": "YouTube",
     "com.netflix.ninja": "Netflix",
-    "com.google.android.apps.tv.launcherx": "Google TV Ana Ekran",
+    "com.google.android.apps.tv.launcherx": "Google TV Home",
     "com.amazon.amazonvideo.livingroom": "Prime Video",
     "com.disney.disneyplus": "Disney+",
     "com.nathnetwork.xciptv": "IPTV",
-    "com.google.android.tv": "Canlı TV",
+    "com.google.android.tv": "Live TV",
     "com.tcl.tv": "TCL TV",
     "com.spotify.tv.android": "Spotify",
     "com.apple.atve.androidtv.appletv": "Apple TV+",
     "com.google.android.play.games": "Google Play Games",
+    "com.google.android.apps.tv.dreamx": "Screensaver",
+}
+
+APP_NAMES_TR = {
+    **APP_NAMES_EN,
+    "com.google.android.apps.tv.launcherx": "Google TV Ana Ekran",
+    "com.google.android.tv": "Canlı TV",
     "com.google.android.apps.tv.dreamx": "Ekran Koruyucu",
 }
 
@@ -39,14 +46,16 @@ APP_ICON_URLS = {
     "com.apple.atve.androidtv.appletv": "https://cdn.jsdelivr.net/npm/simple-icons@v15/icons/appletv.svg",
 }
 
-APP_SOURCES = {label: package for package, label in APP_NAMES.items()}
+def _app_names(language: str | None) -> dict[str, str]:
+    """Return human-readable app names in Home Assistant's configured language."""
+    return APP_NAMES_TR if (language or "").lower().startswith("tr") else APP_NAMES_EN
 
 
-def _friendly_app_name(package: str | None) -> str | None:
+def _friendly_app_name(package: str | None, language: str | None) -> str | None:
     if not package:
         return None
-    if package in APP_NAMES:
-        return APP_NAMES[package]
+    if package in _app_names(language):
+        return _app_names(language)[package]
     leaf = package.rsplit(".", 1)[-1].replace("_", " ").replace("-", " ")
     return leaf.title() if leaf else package
 
@@ -61,7 +70,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 class ADBFullTVMediaPlayer(MediaPlayerEntity):
     _attr_should_poll = False
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
     _attr_supported_features = (
         MediaPlayerEntityFeature.PLAY
         | MediaPlayerEntityFeature.PAUSE
@@ -80,7 +89,7 @@ class ADBFullTVMediaPlayer(MediaPlayerEntity):
     def __init__(self, entry, client):
         self.entry = entry
         self.client = client
-        self._attr_name = entry.data.get("name", "ADB FullTV")
+        self._attr_name = None
         self._attr_unique_id = f"{entry.entry_id}_media_player"
         self._unsub = None
         self._state = STATE_OFF
@@ -120,8 +129,9 @@ class ADBFullTVMediaPlayer(MediaPlayerEntity):
         # Always expose installed/common apps even when Android TV Remote v2
         # does not report its hardware-input list.  This makes HA's "Source"
         # button functional and keeps raw package identifiers out of the UI.
-        self._sources = list(dict.fromkeys([*APP_SOURCES, *inputs]))
-        self._source = _friendly_app_name(self._app) or self.client.get_current_source_cached()
+        app_sources = {label: package for package, label in _app_names(self.client.hass.config.language).items()}
+        self._sources = list(dict.fromkeys([*app_sources, *inputs]))
+        self._source = _friendly_app_name(self._app, self.client.hass.config.language) or self.client.get_current_source_cached()
         vinfo = self.client.get_volume_info_cached()
         self._volume_level = None
         self._is_muted = None
@@ -135,7 +145,7 @@ class ADBFullTVMediaPlayer(MediaPlayerEntity):
     @property
     def state(self): return self._state
     @property
-    def app_name(self): return _friendly_app_name(self._app)
+    def app_name(self): return _friendly_app_name(self._app, self.client.hass.config.language)
     @property
     def app_id(self): return self._app
     @property
@@ -197,7 +207,7 @@ class ADBFullTVMediaPlayer(MediaPlayerEntity):
 
     async def async_select_source(self, source):
         try:
-            package = APP_SOURCES.get(source)
+            package = {label: package for package, label in _app_names(self.client.hass.config.language).items()}.get(source)
             if package:
                 await self.client.launch_app(package)
                 self._source = source
