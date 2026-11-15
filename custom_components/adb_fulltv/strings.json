@@ -62,5 +62,35 @@
     "remote": {"remote": {"name": "Remote"}},
     "image": {"screen": {"name": "Screen"}},
     "notify": {"notification": {"name": "On-screen notification"}}
+  },
+  "selector": {
+    "setup_method": {
+      "options": {
+        "scan": "Discover devices on the network",
+        "manual": "Enter an IP address manually"
+      }
+    },
+    "pair_action": {
+      "options": {
+        "submit": "Submit code",
+        "resend": "Send a new code",
+        "skip": "Skip pairing"
+      }
+    }
+  },
+  "services": {
+    "adb_test": {
+      "name": "Test ADB connection",
+      "description": "Test the ADB Lite connection used by ADB FullTV.",
+      "fields": {"host": {"name": "IP address", "description": "Uses the configured TV when omitted."}}
+    },
+    "adb_set_volume_test": {
+      "name": "Test ADB volume",
+      "description": "Try setting the TV volume immediately through ADB Lite.",
+      "fields": {
+        "host": {"name": "IP address", "description": "Uses the configured TV when omitted."},
+        "level": {"name": "Volume level", "description": "A value from 0.0 to 1.0."}
+      }
+    }
   }
 }
