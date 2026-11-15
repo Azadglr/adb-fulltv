@@ -1,0 +1,20 @@
+{
+  "domain": "adb_fulltv",
+  "name": "ADB FullTV",
+  "version": "2.4.3",
+  "documentation": "https://github.com/AzadGLR/adb-fulltv",
+  "issue_tracker": "https://github.com/AzadGLR/adb-fulltv/issues",
+  "codeowners": [
+    "@AzadGLR"
+  ],
+  "config_flow": true,
+  "iot_class": "local_push",
+  "requirements": [
+    "androidtvremote2==0.3.1",
+    "adb-shell[async]==0.4.4",
+    "notifications-android-tv==0.1.5"
+  ],
+  "zeroconf": [
+    "_androidtvremote2._tcp.local."
+  ]
+}
