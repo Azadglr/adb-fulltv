@@ -38,6 +38,10 @@ Until the repository is listed in the default HACS catalogue:
 4. Restart Home Assistant.
 5. Go to **Settings → Devices & services → Add integration → ADB FullTV**.
 
+When the repository is public, this direct Home Assistant link can add it to HACS:
+
+[![Open your Home Assistant instance and show the repository in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Azadglr&repository=adb-fulltv&category=integration)
+
 ## Manual installation
 
 Copy `custom_components/adb_fulltv` into your Home Assistant `config/custom_components` directory, then restart Home Assistant.
