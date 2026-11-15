@@ -94,7 +94,11 @@ async def _async_register_services(hass: HomeAssistant):
                 continue
             adb = ADBLite(Path(hass.config.path(".storage")) / DOMAIN / "adb", host)
             ok = await adb.probe(stream=3)
-            results[host] = {"adb_connected": ok, "last_error": adb.last_error, "message": "ADB bağlantısı başarılı." if ok else "ADB bağlantısı başarısız. TV'de Network Debugging iznini kontrol edin."}
+            results[host] = {
+                "adb_connected": ok,
+                "last_error": adb.last_error,
+                "message": "ADB connection successful." if ok else "ADB connection failed. Check Network Debugging permission on the TV.",
+            }
             await adb.disconnect()
         return results
 
