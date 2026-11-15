@@ -62,5 +62,35 @@
     "remote": {"remote": {"name": "Kontrol"}},
     "image": {"screen": {"name": "Ekran"}},
     "notify": {"notification": {"name": "Bildirim"}}
+  },
+  "selector": {
+    "setup_method": {
+      "options": {
+        "scan": "Ağdaki cihazları bul",
+        "manual": "IP adresini manuel gir"
+      }
+    },
+    "pair_action": {
+      "options": {
+        "submit": "Kodu gönder",
+        "resend": "Yeni kod gönder",
+        "skip": "Eşleştirmeyi atla"
+      }
+    }
+  },
+  "services": {
+    "adb_test": {
+      "name": "ADB bağlantısını test et",
+      "description": "ADB FullTV için kullanılan ADB Lite bağlantısını test eder.",
+      "fields": {"host": {"name": "IP adresi", "description": "Boş bırakılırsa yapılandırılmış TV kullanılır."}}
+    },
+    "adb_set_volume_test": {
+      "name": "ADB sesini test et",
+      "description": "ADB Lite ile TV sesini anında ayarlamayı dener.",
+      "fields": {
+        "host": {"name": "IP adresi", "description": "Boş bırakılırsa yapılandırılmış TV kullanılır."},
+        "level": {"name": "Ses seviyesi", "description": "0.0 ile 1.0 arasında bir değer."}
+      }
+    }
   }
 }
