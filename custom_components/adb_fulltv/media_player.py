@@ -35,8 +35,8 @@ APP_NAMES_TR = {
 }
 
 # The native Home Assistant media dialog uses ``media_image_url`` for its
-# artwork.  These small, official-style brand marks are only a fallback: a
-# real programme thumbnail reported by Google Cast always takes precedence.
+# artwork. These small application marks are used as a fallback when the TV
+# does not expose programme artwork through ADB.
 APP_ICON_URLS = {
     "com.google.android.youtube.tv": "https://cdn.jsdelivr.net/npm/simple-icons@v15/icons/youtube.svg",
     "com.netflix.ninja": "https://cdn.jsdelivr.net/npm/simple-icons@v15/icons/netflix.svg",

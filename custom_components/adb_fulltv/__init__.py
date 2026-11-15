@@ -6,7 +6,6 @@ from pathlib import Path
 import voluptuous as vol
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
-from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import DOMAIN
 
@@ -38,12 +37,6 @@ async def async_setup_entry(hass: HomeAssistant, entry):
         keyfile = str(base.with_suffix(".key.pem"))
 
     client = ADBFullTVClient(hass, host, name, certfile, keyfile, use_adb_volume=use_adb_volume)
-    client._cast_unsub = async_track_state_change_event(
-        hass,
-        ["media_player.salon"],
-        lambda event: client.apply_cast_state(event.data.get("new_state")),
-    )
-    client.apply_cast_state(hass.states.get("media_player.salon"))
     hass.data[DOMAIN][entry.entry_id] = client
     await _async_register_services(hass)
 
@@ -69,8 +62,6 @@ async def async_unload_entry(hass: HomeAssistant, entry):
     if unload_ok:
         client = hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
         if client:
-            if getattr(client, "_cast_unsub", None):
-                client._cast_unsub()
             try:
                 await client.disconnect()
             except Exception:

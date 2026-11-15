@@ -2,10 +2,10 @@
   "domain": "adb_fulltv",
   "name": "ADB FullTV",
   "version": "2.5.0",
-  "documentation": "https://github.com/AzadGLR/adb-fulltv",
-  "issue_tracker": "https://github.com/AzadGLR/adb-fulltv/issues",
+  "documentation": "https://github.com/Azadglr/adb-fulltv",
+  "issue_tracker": "https://github.com/Azadglr/adb-fulltv/issues",
   "codeowners": [
-    "@AzadGLR"
+    "@Azadglr"
   ],
   "config_flow": true,
   "iot_class": "local_push",

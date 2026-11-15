@@ -14,7 +14,7 @@
 - Friendly sources: YouTube, Netflix, Prime Video, Disney+, Spotify, Apple TV+ and more
 - Remote control entity with navigation, media and power commands
 - Current app, title, artist/channel, duration and position metadata
-- App icon fallback and Cast artwork support
+- App icon fallback when the TV does not provide programme artwork
 - Live PNG screen capture through ADB
 - On-screen notification entity with an ADB fallback
 - Volume and mute control, including optional direct ADB volume

@@ -65,7 +65,6 @@ class ADBFullTVClient:
         self._remote_reconnect_task: asyncio.Task | None = None
         self._screenshot: bytes | None = None
         self._screenshot_at = 0.0
-        self._cast_state = None
         self._adb_failures = 0
 
         self._listeners: set[Listener] = set()
@@ -177,36 +176,6 @@ class ADBFullTVClient:
     def get_sources_cached(self): return self.inputs
     def get_current_source_cached(self): return self.current_input
 
-    def apply_cast_state(self, state) -> None:
-        """Merge Google Cast metadata into the single FullTV media entity."""
-        self._cast_state = state
-        if state is None:
-            return
-        attrs = state.attributes
-        title = attrs.get("media_title")
-        artist = attrs.get("media_artist")
-        channel = attrs.get("media_channel")
-        image_url = attrs.get("entity_picture") or attrs.get("media_image_url")
-        if title:
-            self.media_title = title
-        if artist:
-            self.media_artist = artist
-        if channel:
-            self.media_channel = channel
-        if image_url:
-            self.media_image_url = image_url
-        for attr, target in (
-            ("media_duration", "media_duration"),
-            ("media_position", "media_position"),
-            ("media_position_updated_at", "media_position_updated_at"),
-        ):
-            value = attrs.get(attr)
-            if value is not None:
-                setattr(self, target, value)
-        if state.state in ("playing", "paused", "idle", "buffering"):
-            self.media_state = state.state
-        self._notify()
-
     async def _telemetry_loop(self):
         """Collect media metadata that Android TV Remote v2 does not expose."""
         while True:
@@ -306,26 +275,18 @@ class ADBFullTVClient:
             self.media_title, self.media_artist, self.media_album, self.media_channel,
             self.media_duration, self.media_position, self.media_state
         )
-        cast_attrs = self._cast_state.attributes if self._cast_state is not None else {}
-        cast_title = cast_attrs.get("media_title")
-        cast_artist = cast_attrs.get("media_artist")
-        cast_channel = cast_attrs.get("media_channel")
-        cast_image = cast_attrs.get("entity_picture") or cast_attrs.get("media_image_url")
-        self.media_title = cast_title or title
-        self.media_artist = cast_artist or artist
+        self.media_title = title
+        self.media_artist = artist
         self.media_album = album
         # YouTube commonly reports its creator in ARTIST but leaves the
         # CHANNEL field empty.  Surface it in both standard HA metadata
         # fields so dashboards can choose either "channel" or "artist".
-        self.media_channel = cast_channel or channel or (
+        self.media_channel = channel or (
             artist if self.current_app == "com.google.android.youtube.tv" else None
         )
-        self.media_image_url = cast_image or self.media_image_url
-        self.media_duration = cast_attrs.get("media_duration") or duration
-        cast_position = cast_attrs.get("media_position")
-        self.media_position = cast_position if cast_position is not None else position
-        cast_state = self._cast_state.state if self._cast_state is not None else None
-        self.media_state = cast_state if cast_state in ("playing", "paused", "idle", "buffering") else new_state
+        self.media_duration = duration
+        self.media_position = position
+        self.media_state = new_state
         if position is not None:
             self.media_position_updated_at = datetime.now(timezone.utc)
         if changed:

@@ -6,6 +6,7 @@
 - Added complete English and Turkish translations for selectors, services and entity names.
 - Localized app source labels according to the configured Home Assistant language.
 - Added the Home Assistant Hassfest validation workflow required for HACS Marketplace review.
+- Removed a device-specific Cast dependency; media metadata now comes from the configured TV only.
 
 ## 2.4.3
 
