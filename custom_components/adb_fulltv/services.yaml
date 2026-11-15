@@ -1,26 +1,26 @@
 adb_test:
-  name: ADB Bağlantısını Test Et
-  description: ADB FullTV için ADB Lite bağlantısını test eder.
+  name: Test ADB connection
+  description: Test the ADB Lite connection used by ADB FullTV.
   fields:
     host:
-      name: IP Adresi
-      description: Boş bırakılırsa entegrasyona eklenen TV kullanılır.
+      name: IP address
+      description: Uses the TV configured in the integration when omitted.
       required: false
       selector:
         text:
 adb_set_volume_test:
-  name: ADB ile Ses Seviyesi Test Et
-  description: ADB Lite ile TV sesini anında belirtilen seviyeye ayarlamayı dener.
+  name: Test ADB volume
+  description: Try setting the TV volume immediately through ADB Lite.
   fields:
     host:
-      name: IP Adresi
-      description: Boş bırakılırsa entegrasyona eklenen TV kullanılır.
+      name: IP address
+      description: Uses the TV configured in the integration when omitted.
       required: false
       selector:
         text:
     level:
-      name: Ses Seviyesi
-      description: 0.0 ile 1.0 arasında ses seviyesi. Örnek 0.8 = %80.
+      name: Volume level
+      description: A volume level from 0.0 to 1.0. For example, 0.8 is 80%.
       required: false
       default: 0.8
       selector:
