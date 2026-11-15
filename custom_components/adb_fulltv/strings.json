@@ -1,0 +1,66 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADB FullTV Setup",
+        "description": "You can automatically discover your TV on the network or enter the IP address manually.",
+        "data": {
+          "method": "Setup Method"
+        }
+      },
+      "scan": {
+        "title": "Select Device",
+        "description": "Select a device. Pairing is enabled by default, but you can skip it and pair later.",
+        "data": {
+          "host": "IP Address",
+          "name": "Name",
+          "pair_now": "Pair Now",
+          "use_adb_volume": "Use ADB Service (Instant Volume)"
+        }
+      },
+      "manual": {
+        "title": "Manual Setup",
+        "description": "Enter the TV IP address.",
+        "data": {
+          "host": "IP Address",
+          "name": "Name",
+          "pair_now": "Pair Now",
+          "use_adb_volume": "Use ADB Service (Instant Volume)"
+        }
+      },
+      "pair": {
+        "title": "Pairing",
+        "description": "Enter the code shown on the TV screen. If no code appears, use the action field to resend the code or skip pairing.",
+        "data": {
+          "code": "Code",
+          "pair_action": "Action"
+        }
+      }
+    },
+    "error": {
+      "no_devices_found": "No devices found.",
+      "pair_failed": "Pairing failed. Try again or skip pairing.",
+      "code_required": "Code cannot be empty.",
+      "pair_start_failed": "Could not resend pairing request. Make sure the TV is powered on and on the same network."
+    },
+    "abort": {
+      "local_ip_failed": "Could not determine local IP address."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "description": "Status:\n{status}\n\nEnable or disable ADB for instant volume. If ADB is not available, the integration will fall back to normal volume control.",
+        "data": {
+          "use_adb_volume": "Use ADB Service (Instant Volume)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "remote": {"remote": {"name": "Remote"}},
+    "image": {"screen": {"name": "Screen"}},
+    "notify": {"notification": {"name": "On-screen notification"}}
+  }
+}
