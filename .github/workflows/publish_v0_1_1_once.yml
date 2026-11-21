@@ -1,0 +1,40 @@
+name: Publish v0.1.1 once
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: startsWith(github.event.head_commit.message, 'Release v0.1.1')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create v0.1.1 release and remove superseded v0.1.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/RELEASE_NOTES.md" <<'NOTES'
+          ## Fixed
+          - TCL / Google TV standby is now reported as **Off** even when ADB remains connected.
+          - Media player no longer displays stale Netflix/other application activity when the TV is asleep.
+          - Power and availability changes update Home Assistant promptly.
+
+          ## Unchanged
+          - Android TV Remote v2 controls, ADB telemetry, screenshots, notifications, source selection and volume controls.
+          - Existing Home Assistant entities and automations remain compatible.
+          NOTES
+          if ! gh release view v0.1.1 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create v0.1.1 --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "ADB FullTV v0.1.1" --notes-file "$RUNNER_TEMP/RELEASE_NOTES.md" --latest
+          fi
+          gh release view v0.1.1 --repo "$GITHUB_REPOSITORY"
+          if gh release view v0.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete v0.1.0 --repo "$GITHUB_REPOSITORY" --cleanup-tag -y
+          fi
+          if gh api -X GET "repos/$GITHUB_REPOSITORY/git/ref/heads/fix/tv-standby-power-detection-20261121" >/dev/null 2>&1; then
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/fix/tv-standby-power-detection-20261121"
+          fi
