@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.1 (2026-11-21)
+
+- Fixed false ON state when TCL / Google TV is in standby but ADB remains reachable.
+- Use actual Android screen/wakefulness state before displaying media player as active.
+- Clear stale Netflix and other app metadata while the TV is off.
+- Improve Home Assistant state updates when only power/availability changes.
+- Add coverage for standby, awake, dozing and unknown power states.
+
 ## v0.1.0
 
 - Fixed secondary entity names so they no longer all fall back to `ADB FullTV`.
