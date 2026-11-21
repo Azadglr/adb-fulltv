@@ -13,6 +13,7 @@ from homeassistant.core import HomeAssistant
 
 from .adb_lite import ADBLite
 from .const import DOMAIN
+from .power_state import parse_android_tv_power_state
 
 _LOGGER = logging.getLogger(__name__)
 Listener = Callable[[], None]
@@ -48,6 +49,7 @@ class ADBFullTVClient:
 
         self.available: bool | None = None
         self.is_on: bool | None = None
+        self._adb_is_on: bool | None = None
         self.current_app: str | None = None
         self.volume_info: dict | None = None
         self.current_input: str | None = None
@@ -159,7 +161,10 @@ class ADBFullTVClient:
         self._notify()
 
     def _on_is_on(self, value: bool):
+        # A fresh Remote v2 event invalidates the last ADB power snapshot.
+        # The next telemetry cycle will confirm the physical screen state.
         self.is_on = value
+        self._adb_is_on = None
         self._notify()
 
     def _on_current_app(self, value: str):
@@ -170,7 +175,8 @@ class ADBFullTVClient:
         self.volume_info = value
         self._notify()
 
-    def get_is_on_cached(self): return self.is_on
+    def get_is_on_cached(self):
+        return self._adb_is_on if self._adb_is_on is not None else self.is_on
     def get_current_app_cached(self): return self.current_app
     def get_volume_info_cached(self): return self.volume_info
     def get_sources_cached(self): return self.inputs
@@ -204,17 +210,59 @@ class ADBFullTVClient:
     async def refresh_media_metadata(self):
         if self._adb is None:
             self._adb = ADBLite(self._adb_dir, self.host, self._ADB_PORT)
+        previous_is_on = self.get_is_on_cached()
+        previous_available = self.available
+        # ADB stays reachable on some TCL / Google TV sets during standby.
+        # Media-session success does NOT imply that the screen is on.
+        power_dump = await self._adb.shell("dumpsys power")
+        screen_on = parse_android_tv_power_state(power_dump)
+        if power_dump is not None and screen_on is None:
+            screen_on = parse_android_tv_power_state(
+                await self._adb.shell("dumpsys display")
+            )
+        if screen_on is not None:
+            self._adb_is_on = screen_on
+            self.available = True
+
+        if screen_on is False:
+            old_metadata = (
+                self.current_app, self.media_title, self.media_artist,
+                self.media_album, self.media_channel, self.media_image_url,
+                self.media_duration, self.media_position, self.media_state,
+            )
+            self.current_app = None
+            self.media_title = None
+            self.media_artist = None
+            self.media_album = None
+            self.media_channel = None
+            self.media_image_url = None
+            self.media_duration = None
+            self.media_position = None
+            self.media_position_updated_at = None
+            self.media_state = None
+            self._screenshot = None
+            self._adb_failures = 0
+            if (
+                previous_is_on is not False
+                or previous_available != self.available
+                or any(value is not None for value in old_metadata)
+            ):
+                self._notify()
+            return
+
         dump = await self._adb.shell("dumpsys media_session")
         if dump is None:
             self._adb_failures += 1
-            if self._adb_failures >= 3 and self.is_on is not False:
+            if self._adb_failures >= 3:
                 self.available = False
-                self.is_on = False
+            if (
+                previous_is_on != self.get_is_on_cached()
+                or previous_available != self.available
+            ):
                 self._notify()
             return
         self._adb_failures = 0
         self.available = True
-        self.is_on = True
 
         focus = await self._adb.shell(
             "dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp'"
@@ -289,7 +337,11 @@ class ADBFullTVClient:
         self.media_state = new_state
         if position is not None:
             self.media_position_updated_at = datetime.now(timezone.utc)
-        if changed:
+        if (
+            changed
+            or previous_is_on != self.get_is_on_cached()
+            or previous_available != self.available
+        ):
             self._notify()
 
     async def get_screenshot(self, max_age: float = 5.0) -> bytes | None:
@@ -364,7 +416,9 @@ class ADBFullTVClient:
     async def send_key(self, key: str, direction: str = "SHORT"):
         await _maybe_await(self.remote.send_key_command(key, direction))
 
-    async def power_on(self): await self.send_key("POWER")
+    async def power_on(self):
+        self._adb_is_on = None
+        await self.send_key("POWER")
 
     async def power_off(self):
         """Power off through ADB first; some TCL Remote v2 builds ignore POWER."""
@@ -373,6 +427,7 @@ class ADBFullTVClient:
         result = await self._adb.shell("input keyevent 26")
         if result is not None:
             self.is_on = False
+            self._adb_is_on = False
             self._notify()
             return
         await self.send_key("POWER")
