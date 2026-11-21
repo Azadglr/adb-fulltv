@@ -13,7 +13,7 @@
     "androidtvremote2>=0.3.3",
     "notifications-android-tv>=0.1.5"
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "zeroconf": [
     "_androidtvremote2._tcp.local."
   ]
