@@ -132,6 +132,12 @@ class ADBFullTVMediaPlayer(MediaPlayerEntity):
         app_sources = {label: package for package, label in _app_names(self.client.hass.config.language).items()}
         self._sources = list(dict.fromkeys([*app_sources, *inputs]))
         self._source = _friendly_app_name(self._app, self.client.hass.config.language) or self.client.get_current_source_cached()
+        if self._state == STATE_OFF:
+            self._app = None
+            self._source = None
+            self._volume_level = None
+            self._is_muted = None
+            return
         vinfo = self.client.get_volume_info_cached()
         self._volume_level = None
         self._is_muted = None
@@ -149,24 +155,24 @@ class ADBFullTVMediaPlayer(MediaPlayerEntity):
     @property
     def app_id(self): return self._app
     @property
-    def media_title(self): return self.client.media_title
+    def media_title(self): return self.client.media_title if self._state != STATE_OFF else None
     @property
-    def media_artist(self): return self.client.media_artist
+    def media_artist(self): return self.client.media_artist if self._state != STATE_OFF else None
     @property
-    def media_album_name(self): return self.client.media_album
+    def media_album_name(self): return self.client.media_album if self._state != STATE_OFF else None
     @property
-    def media_channel(self): return self.client.media_channel
+    def media_channel(self): return self.client.media_channel if self._state != STATE_OFF else None
     @property
-    def media_duration(self): return self.client.media_duration
+    def media_duration(self): return self.client.media_duration if self._state != STATE_OFF else None
     @property
-    def media_position(self): return self.client.media_position
+    def media_position(self): return self.client.media_position if self._state != STATE_OFF else None
     @property
-    def media_position_updated_at(self): return self.client.media_position_updated_at
+    def media_position_updated_at(self): return self.client.media_position_updated_at if self._state != STATE_OFF else None
     @property
-    def media_content_type(self): return "video" if self.client.media_title else None
+    def media_content_type(self): return "video" if self._state != STATE_OFF and self.client.media_title else None
     @property
     def media_image_url(self):
-        return self.client.media_image_url or APP_ICON_URLS.get(self._app)
+        return (self.client.media_image_url or APP_ICON_URLS.get(self._app)) if self._state != STATE_OFF else None
     @property
     def media_image_remotely_accessible(self): return True
     @property
